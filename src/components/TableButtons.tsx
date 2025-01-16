@@ -8,6 +8,20 @@ type Props = {
 };
 
 const TableButtons: React.FC<Props> = ({ edit, editFunction, pdf, pdfURL }) => {
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  
+  const handlePdfClick = () => {
+    if (pdfURL) {
+      if (isAndroid) {
+        // Open in the same tab for Android devices
+        window.location.href = pdfURL;
+      } else {
+        // Open in a new tab for non-Android devices
+        window.open(pdfURL, "_blank");
+      }
+    }
+  };
+
   return (
     <div className="table-buttons">
       {edit && (
@@ -16,12 +30,7 @@ const TableButtons: React.FC<Props> = ({ edit, editFunction, pdf, pdfURL }) => {
         </svg>
       )}
       {pdf && pdfURL && (
-        <svg
-          className="pdf"
-          onClick={() => {
-            window.open(pdfURL, "_blank");
-          }}
-        >
+        <svg className="pdf" onClick={handlePdfClick}>
           <use xlinkHref="/icons/sprite.svg#icon-file-text"></use>
         </svg>
       )}

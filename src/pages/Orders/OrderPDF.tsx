@@ -3,13 +3,13 @@ import LatoRegular from "../../assets/Lato/Lato-Regular.ttf";
 import LatoBold from "../../assets/Lato/Lato-Bold.ttf";
 
 import {
-  PDFViewer,
   Document,
   Page,
   View,
   Text,
   StyleSheet,
   Font,
+  PDFViewer,
 } from "@react-pdf/renderer";
 import axios from "axios";
 import { url } from "../../assets/constants";
@@ -186,7 +186,7 @@ const OrderPDF: React.FC<Props> = ({}) => {
 
   return (
     <div style={{ width: "100%", height: "100dvh" }}>
-      <PDFViewer width={"100%"} height={"100%"}>
+      <PDFViewer height={"100%"} width={"100%"}>
         <Document>
           {paginatedOrderDetails.map((details, pageIndex) => (
             <Page size="A4" style={styles.page} key={pageIndex}>
