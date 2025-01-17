@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router";
 
 type Props = {
   edit?: boolean;
@@ -10,13 +9,12 @@ type Props = {
 
 const TableButtons: React.FC<Props> = ({ edit, editFunction, pdf, pdfURL }) => {
   const isAndroid = /Android/i.test(navigator.userAgent);
-  const navigate = useNavigate()
-  
+
   const handlePdfClick = () => {
     if (pdfURL) {
       if (isAndroid) {
         // Open in the same tab for Android devices
-        navigate(pdfURL)
+        window.open(pdfURL, "_self");
       } else {
         // Open in a new tab for non-Android devices
         window.open(pdfURL, "_blank");
