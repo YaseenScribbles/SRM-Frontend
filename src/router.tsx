@@ -37,12 +37,12 @@ const router = createBrowserRouter([
         path: "/order",
         element: <Order />,
       },
+      {
+        path: "/order/:id",
+        element: <OrderPDF />,    
+      },
     ],
-  },
-  {
-    path: "/order/:id",
-    element: <OrderPDF />,    
-  },
+  },  
 ]);
 
 export default router;
