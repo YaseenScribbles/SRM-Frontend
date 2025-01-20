@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router";
 
 type Props = {
   edit?: boolean;
@@ -22,6 +23,8 @@ const TableButtons: React.FC<Props> = ({ edit, editFunction, pdf, pdfURL }) => {
   //   }
   // };
 
+  const navigate = useNavigate();
+
   return (
     <div className="table-buttons">
       {edit && (
@@ -30,7 +33,7 @@ const TableButtons: React.FC<Props> = ({ edit, editFunction, pdf, pdfURL }) => {
         </svg>
       )}
       {pdf && pdfURL && (
-        <svg className="pdf" onClick={() => window.open(pdfURL, "_self")}>
+        <svg className="pdf" onClick={() => navigate(pdfURL)}>
           <use xlinkHref="/icons/sprite.svg#icon-file-text"></use>
         </svg>
       )}

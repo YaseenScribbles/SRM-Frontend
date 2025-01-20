@@ -144,8 +144,6 @@ const OrderPDF: React.FC<Props> = ({ orderId, token }) => {
     createdBy: "",
   });
   const [orderDetails, setOrderDetails] = useState<OrderItem[]>([]);
-  // const { user } = useUserContext();
-  // const { id } = useParams();
   const rowsPerPage = 22;
   const chunkArray = (array: OrderItem[], size: number) => {
     const chunks = [];
@@ -355,6 +353,8 @@ const OrderPDF: React.FC<Props> = ({ orderId, token }) => {
 const PDFViewer: React.FC = () => {
   const { user } = useUserContext();
   const { id } = useParams();
+  // const isAndroid = /Android/i.test(navigator.userAgent);
+
   return (
     <BlobProvider document={<OrderPDF token={user!.token} orderId={id!} />}>
       {({ blob, error, loading, url }) => {
@@ -373,20 +373,57 @@ const PDFViewer: React.FC = () => {
             </div>
           );
 
+        // if (blob && isAndroid) {
+        //   const fallbackUrl = URL.createObjectURL(blob);
+        //   return (
+        //     <div
+        //       style={{                    
+        //         position: "absolute",
+        //         top: "50%",
+        //         left: "50%",
+        //         transform: "translate(-50%, -50%)",                
+        //       }}
+        //     >
+        //       <a className="btn btn--link" href={fallbackUrl} download={`${id}.pdf`}>
+        //         Download PDF
+        //       </a>              
+        //     </div>
+        //   );
+        // }
+
         if (error || !url) {
           // Handle fallback: provide a download link if the blob fails
           if (blob) {
             const fallbackUrl = URL.createObjectURL(blob);
             return (
-              <a className="btn" href={fallbackUrl} download="document.pdf">
-                Download PDF
-              </a>
+              <div
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <a className="btn" href={fallbackUrl} download={`${id}.pdf`}>
+                  Download PDF
+                </a>
+              </div>
             );
           }
           return <p>Failed to load PDF. No valid fallback available.</p>;
         }
 
-        return <iframe src={url} width={"100%"} height={"100%"} />;
+        return (
+          <div style={{ width: "100%", height: "100%" }}>
+            <embed
+              src={url}
+              width="100%"
+              height="100%"
+              type="application/pdf"
+            />
+          </div>
+        );
       }}
     </BlobProvider>
   );

@@ -10,6 +10,8 @@
   visibility: visible;
   box-shadow: 1rem 2rem 4rem rgba(0, 0, 0, 0.2);
   border-radius: 1rem;
+  outline: none;
+  border: none;
   transition: all 0.25s;
 
   &--big {
