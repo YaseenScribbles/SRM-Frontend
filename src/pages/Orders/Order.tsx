@@ -16,6 +16,8 @@ import { useUserContext } from "../../contexts/UserContext";
 import { handleError } from "../../assets/helperFunctions";
 import TableButtons from "../../components/TableButtons";
 import Grid from "../../components/Grid";
+import OrderPDF from "./OrderPDF";
+import { pdf } from "@react-pdf/renderer";
 const AddEditModal = lazy(() => import("./AddEditOrder"));
 
 type Props = {};
@@ -72,7 +74,51 @@ const Order: React.FC<Props> = ({}) => {
               setShowModal(true);
             }}
             pdf
-            pdfURL={`/order/${info.row.original.id}`}
+            downloadPDF={async () => {
+              try {
+                setLoading(true);
+                const resp = await axios.get(
+                  `${url}order-pdf/${info.row.original.id}`,
+                  {
+                    headers: {
+                      Accept: "application/json",
+                      Authorization: `Bearer ${user?.token}`,
+                    },
+                  }
+                );
+
+                const { master, details } = resp.data;
+
+                const order = {
+                  orderNo: master[0].id,
+                  date: master[0].date,
+                  contact: master[0].contact,
+                  address: master[0].address,
+                  phone: master[0].phone,
+                  remarks: master[0].remarks,
+                  createdBy: master[0].user,
+                };
+
+                const doc = <OrderPDF order={order} orderDetails={details} />;
+                // Create an instance of the PDF and wait for it to render
+                const pdfInstance = pdf(doc);
+                const blob = await pdfInstance.toBlob();
+
+                // Create a download link
+                const pdfurl = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = pdfurl;
+                a.download = `Order_${info.row.original.id}.pdf`; // Set the file name
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(pdfurl);
+              } catch (error) {
+                handleError(error);
+              } finally {
+                setLoading(false);
+              }
+            }}
           />
         );
       },

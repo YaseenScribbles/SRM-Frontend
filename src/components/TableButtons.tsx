@@ -1,14 +1,13 @@
 import React from "react";
-import { useNavigate } from "react-router";
 
 type Props = {
   edit?: boolean;
   editFunction?: () => void;
   pdf?: boolean;
-  pdfURL?: string;
+  downloadPDF?: () => void;
 };
 
-const TableButtons: React.FC<Props> = ({ edit, editFunction, pdf, pdfURL }) => {
+const TableButtons: React.FC<Props> = ({ edit, editFunction, pdf, downloadPDF }) => {
   // const isAndroid = /Android/i.test(navigator.userAgent);
 
   // const handlePdfClick = () => {
@@ -23,8 +22,6 @@ const TableButtons: React.FC<Props> = ({ edit, editFunction, pdf, pdfURL }) => {
   //   }
   // };
 
-  const navigate = useNavigate();
-
   return (
     <div className="table-buttons">
       {edit && (
@@ -32,8 +29,8 @@ const TableButtons: React.FC<Props> = ({ edit, editFunction, pdf, pdfURL }) => {
           <use xlinkHref="/icons/sprite.svg#icon-new-message"></use>
         </svg>
       )}
-      {pdf && pdfURL && (
-        <svg className="pdf" onClick={() => navigate(pdfURL)}>
+      {pdf && (
+        <svg className="pdf" onClick={downloadPDF}>
           <use xlinkHref="/icons/sprite.svg#icon-file-text"></use>
         </svg>
       )}

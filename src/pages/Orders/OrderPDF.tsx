@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import LatoRegular from "../../assets/Lato/Lato-Regular.ttf";
 import LatoBold from "../../assets/Lato/Lato-Bold.ttf";
-
 import {
   Document,
   Page,
@@ -9,18 +8,11 @@ import {
   Text,
   StyleSheet,
   Font,
-  BlobProvider,
 } from "@react-pdf/renderer";
-import axios from "axios";
-import { colorSecondary, url } from "../../assets/constants";
-import { useUserContext } from "../../contexts/UserContext";
-import { handleError } from "../../assets/helperFunctions";
-import { useParams } from "react-router";
-import Loading from "react-loading";
 
 type Props = {
-  orderId: string;
-  token: string;
+  order: Order;
+  orderDetails: OrderItem[];
 };
 
 type Order = {
@@ -133,17 +125,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const OrderPDF: React.FC<Props> = ({ orderId, token }) => {
-  const [order, setOrder] = useState<Order>({
-    orderNo: "",
-    date: "",
-    contact: "",
-    address: "",
-    phone: "",
-    remarks: "",
-    createdBy: "",
-  });
-  const [orderDetails, setOrderDetails] = useState<OrderItem[]>([]);
+const OrderPDF: React.FC<Props> = ({ order, orderDetails }) => {
   const rowsPerPage = 22;
   const chunkArray = (array: OrderItem[], size: number) => {
     const chunks = [];
@@ -154,37 +136,6 @@ const OrderPDF: React.FC<Props> = ({ orderId, token }) => {
   };
 
   const paginatedOrderDetails = chunkArray(orderDetails, rowsPerPage);
-
-  const getOrder = async () => {
-    try {
-      const resp = await axios.get(`${url}order-pdf/${orderId}`, {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const { master, details } = resp.data;
-
-      setOrder({
-        orderNo: master[0].id,
-        date: master[0].date,
-        contact: master[0].contact,
-        address: master[0].address,
-        phone: master[0].phone,
-        remarks: master[0].remarks,
-        createdBy: master[0].user,
-      });
-
-      setOrderDetails(details);
-    } catch (error) {
-      handleError(error);
-    }
-  };
-
-  useEffect(() => {
-    getOrder();
-  }, []);
 
   return (
     <Document>
@@ -350,83 +301,4 @@ const OrderPDF: React.FC<Props> = ({ orderId, token }) => {
   );
 };
 
-const PDFViewer: React.FC = () => {
-  const { user } = useUserContext();
-  const { id } = useParams();
-  // const isAndroid = /Android/i.test(navigator.userAgent);
-
-  return (
-    <BlobProvider document={<OrderPDF token={user!.token} orderId={id!} />}>
-      {({ blob, error, loading, url }) => {
-        if (loading)
-          return (
-            <div
-              style={{
-                width: "100%",
-                height: "100dvh",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Loading type="bars" color={colorSecondary} />
-            </div>
-          );
-
-        // if (blob && isAndroid) {
-        //   const fallbackUrl = URL.createObjectURL(blob);
-        //   return (
-        //     <div
-        //       style={{                    
-        //         position: "absolute",
-        //         top: "50%",
-        //         left: "50%",
-        //         transform: "translate(-50%, -50%)",                
-        //       }}
-        //     >
-        //       <a className="btn btn--link" href={fallbackUrl} download={`${id}.pdf`}>
-        //         Download PDF
-        //       </a>              
-        //     </div>
-        //   );
-        // }
-
-        if (error || !url) {
-          // Handle fallback: provide a download link if the blob fails
-          if (blob) {
-            const fallbackUrl = URL.createObjectURL(blob);
-            return (
-              <div
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <a className="btn" href={fallbackUrl} download={`${id}.pdf`}>
-                  Download PDF
-                </a>
-              </div>
-            );
-          }
-          return <p>Failed to load PDF. No valid fallback available.</p>;
-        }
-
-        return (
-          <div style={{ width: "100%", height: "100%" }}>
-            <embed
-              src={url}
-              width="100%"
-              height="100%"
-              type="application/pdf"
-            />
-          </div>
-        );
-      }}
-    </BlobProvider>
-  );
-};
-
-export default PDFViewer;
+export default OrderPDF;
