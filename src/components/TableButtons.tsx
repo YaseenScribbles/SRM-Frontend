@@ -5,9 +5,18 @@ type Props = {
   editFunction?: () => void;
   pdf?: boolean;
   downloadPDF?: () => void;
+  email?: boolean;
+  sendEmail?: () => void;
 };
 
-const TableButtons: React.FC<Props> = ({ edit, editFunction, pdf, downloadPDF }) => {
+const TableButtons: React.FC<Props> = ({
+  edit,
+  editFunction,
+  pdf,
+  downloadPDF,
+  email,
+  sendEmail,
+}) => {
   // const isAndroid = /Android/i.test(navigator.userAgent);
 
   // const handlePdfClick = () => {
@@ -32,6 +41,11 @@ const TableButtons: React.FC<Props> = ({ edit, editFunction, pdf, downloadPDF })
       {pdf && (
         <svg className="pdf" onClick={downloadPDF}>
           <use xlinkHref="/icons/sprite.svg#icon-file-text"></use>
+        </svg>
+      )}
+      {email && (
+        <svg className="pdf" onClick={sendEmail}>
+          <use xlinkHref="/icons/sprite.svg#icon-mail"></use>
         </svg>
       )}
     </div>

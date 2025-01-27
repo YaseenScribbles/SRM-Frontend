@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react";
 import { useUserContext } from "../../contexts/UserContext";
-import { handleError } from "../../assets/helperFunctions";
+import { handleError, sendEmail } from "../../assets/helperFunctions";
 import axios, { AxiosResponse } from "axios";
 import ReactModal from "react-modal";
 import Select from "../../components/Select";
@@ -147,7 +147,8 @@ const AddEditOrder: React.FC<Props> = ({
     if (query.length < 3) return [];
     try {
       setLoading(true);
-      const resp = await axios.get(`${url}brands?brand=${query}`, {
+      const encodedQuery = encodeURIComponent(query);
+      const resp = await axios.get(`${url}brands?brand=${encodedQuery}`, {
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${user?.token}`,
@@ -172,7 +173,9 @@ const AddEditOrder: React.FC<Props> = ({
   const getStyles = async (query: string) => {
     try {
       setLoading(true);
-      const resp = await axios.get(`${url}styles?brand=${query}`, {
+      // URL-encode the query to handle special characters
+      const encodedQuery = encodeURIComponent(query);
+      const resp = await axios.get(`${url}styles?brand=${encodedQuery}`, {
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${user?.token}`,
@@ -194,8 +197,10 @@ const AddEditOrder: React.FC<Props> = ({
   const getSizes = async (brand: string, style: string) => {
     try {
       setLoading(true);
+      const encodedBrand = encodeURIComponent(brand);
+      const encodedStyle = encodeURIComponent(style);
       const resp = await axios.get(
-        `${url}sizes?brand=${brand}&style=${style}`,
+        `${url}sizes?brand=${encodedBrand}&style=${encodedStyle}`,
         {
           headers: {
             Accept: "application/json",
@@ -287,8 +292,10 @@ const AddEditOrder: React.FC<Props> = ({
       }
 
       const {
-        data: { message },
+        data: { message, id },
       } = response;
+
+      sendEmail(id, user?.token!);
       toast.success(message, { containerId: "layout" });
       resetForm();
       onSave();

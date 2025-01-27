@@ -30,13 +30,12 @@ const initialValue = {
   state_id: "",
   phone: "",
   email: "",
-  distributor_id: "",
   pincode: "",
   active: true,
   user_id: 1,
 };
 
-const AddEditContact: React.FC<Props> = ({
+const AddEditDistributor: React.FC<Props> = ({
   show,
   setShow,
   editId,
@@ -48,16 +47,11 @@ const AddEditContact: React.FC<Props> = ({
   const [loading, setLoading] = useState(false);
   const [stateOptions, setStateOptions] = useState<Option[]>([]);
   const [selectedState, setSelectedState] = useState<Option | null>(null);
-  const [distributorOptions, setDistributorOptions] = useState<Option[]>([]);
-  const [selectedDistributor, setSelectedDistributor] = useState<Option | null>(
-    null
-  );
 
   const resetForm = () => {
     setData({ ...initialValue, user_id: user?.id });
     setEditId(0);
     setSelectedState(null);
-    setSelectedDistributor(null);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -66,12 +60,12 @@ const AddEditContact: React.FC<Props> = ({
       toast.warn("Please fill the name", { containerId: "layout" });
       return;
     }
-    if (data.state_id == "") {
-      toast.warn("Please select the state", { containerId: "layout" });
+    if (data.email == "") {
+      toast.warn("Please fill the email", { containerId: "layout" });
       return;
     }
-    if (!data.distributor_id && !data.email) {
-      toast.warn("Please pick distributor / fill email", { containerId: "layout" });
+    if(data.state_id == ""){
+      toast.warn("Please select the state", { containerId: "layout" });
       return;
     }
 
@@ -80,14 +74,18 @@ const AddEditContact: React.FC<Props> = ({
       let resp: AxiosResponse;
 
       if (editId > 0) {
-        resp = await axios.post(`${url}contacts/${editId}?_method=PUT`, data, {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${user?.token}`,
-          },
-        });
+        resp = await axios.post(
+          `${url}distributors/${editId}?_method=PUT`,
+          data,
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${user?.token}`,
+            },
+          }
+        );
       } else {
-        resp = await axios.post(`${url}contacts`, data, {
+        resp = await axios.post(`${url}distributors`, data, {
           headers: {
             Accept: "application/json",
             Authorization: `Bearer ${user?.token}`,
@@ -105,10 +103,10 @@ const AddEditContact: React.FC<Props> = ({
     }
   };
 
-  const getContact = async (id: number) => {
+  const getDistributor = async (id: number) => {
     try {
       setLoading(true);
-      const resp = await axios.get(`${url}contacts/${id}`, {
+      const resp = await axios.get(`${url}distributors/${id}`, {
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${user?.token}`,
@@ -122,14 +120,6 @@ const AddEditContact: React.FC<Props> = ({
         );
         setSelectedState(selectedState ?? null);
       }
-
-      if (data.distributor_id) {
-        const selectedDistributor = distributorOptions.find(
-          (s) => s.value == data.distributor_id
-        );
-        setSelectedDistributor(selectedDistributor ?? null);
-      }
-
       setData({
         name: data.name,
         address: data.address,
@@ -138,7 +128,6 @@ const AddEditContact: React.FC<Props> = ({
         state_id: data.state_id,
         phone: data.phone,
         email: data.email,
-        distributor_id: data.distributor_id,
         pincode: data.pincode,
         active: data.active == "1" ? true : false,
         user_id: user?.id,
@@ -167,40 +156,18 @@ const AddEditContact: React.FC<Props> = ({
     }
   };
 
-  const getDistributors = async () => {
-    try {
-      const resp = await axios.get(`${url}distributors`, {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-      });
-      const distributors = resp.data.distributors.map(
-        (m: { id: number; name: string }) => ({ label: m.name, value: m.id })
-      );
-      setDistributorOptions(distributors);
-    } catch (error) {
-      handleError(error);
-    }
-  };
-
   useEffect(() => {
-    if (editId) getContact(editId);
+    if (editId) getDistributor(editId);
   }, [editId]);
 
   useEffect(() => {
     if (selectedState) {
-      setData((p) => ({
-        ...p,
-        ...(selectedState && { state_id: selectedState.value }),
-        ...(selectedDistributor && { distributor_id: selectedDistributor.value }),
-      }));
+      setData((p) => ({ ...p, state_id: selectedState.value }));
     }
-  }, [selectedState, selectedDistributor]);
+  }, [selectedState]);
 
   useEffect(() => {
     getStates();
-    getDistributors();
   }, []);
 
   return (
@@ -212,7 +179,7 @@ const AddEditContact: React.FC<Props> = ({
       parentSelector={() => document.getElementById("work-space")!}
     >
       <div className="modal__header">
-        <h2>{`${editId > 0 ? "Update Contact" : "Add Contact"}`}</h2>
+        <h2>{`${editId > 0 ? "Update Distributor" : "Add Distributor"}`}</h2>
         <svg
           onClick={() => {
             setShow(false);
@@ -291,15 +258,6 @@ const AddEditContact: React.FC<Props> = ({
               />
             </div>
             <div className="form__group">
-              <Select
-                id="distributor_id"
-                placeholder="Distributor"
-                options={distributorOptions}
-                value={selectedDistributor}
-                handleChange={(e) => setSelectedDistributor(e)}
-              />
-            </div>
-            <div className="form__group">
               <input
                 type="text"
                 className="input"
@@ -365,4 +323,4 @@ const AddEditContact: React.FC<Props> = ({
   );
 };
 
-export default AddEditContact;
+export default AddEditDistributor;

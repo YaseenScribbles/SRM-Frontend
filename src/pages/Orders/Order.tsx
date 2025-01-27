@@ -13,11 +13,12 @@ import {
 } from "@tanstack/react-table";
 import axios from "axios";
 import { useUserContext } from "../../contexts/UserContext";
-import { handleError } from "../../assets/helperFunctions";
+import { handleError, sendEmail } from "../../assets/helperFunctions";
 import TableButtons from "../../components/TableButtons";
 import Grid from "../../components/Grid";
 import OrderPDF from "./OrderPDF";
 import { pdf } from "@react-pdf/renderer";
+import { toast } from "react-toastify";
 const AddEditModal = lazy(() => import("./AddEditOrder"));
 
 type Props = {};
@@ -115,6 +116,17 @@ const Order: React.FC<Props> = ({}) => {
                 window.URL.revokeObjectURL(pdfurl);
               } catch (error) {
                 handleError(error);
+              } finally {
+                setLoading(false);
+              }
+            }}
+            email
+            sendEmail={async () => {
+              try {
+                setLoading(true);
+                await sendEmail(info.row.original.id, user?.token!);
+              } catch (error: any) {
+                toast.warn(error.message, { containerId: "layout" });
               } finally {
                 setLoading(false);
               }

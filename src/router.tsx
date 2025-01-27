@@ -6,6 +6,7 @@ import Purpose from "./pages/Purposes/Purpose";
 import Contact from "./pages/Contacts/Contact";
 import Visit from "./pages/Visits/Visit";
 import Order from "./pages/Orders/Order";
+import Distributor from "./pages/Distributors/Distributor";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: "/contact",
         element: <Contact />,
+      },
+      {
+        path: "/distributor",
+        element: <Distributor />,
       },
       {
         path: "/visit",

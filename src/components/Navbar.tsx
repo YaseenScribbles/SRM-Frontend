@@ -151,6 +151,25 @@ const Navbar: React.FC<Props> = ({}) => {
               href="#"
               className="side-nav__link"
               onClick={() => {
+                navigate("/distributor");
+                setShowSideNav(false);
+              }}
+            >
+              <svg className="side-nav__icon">
+                <use xlinkHref="/icons/sprite.svg#icon-network-chart-2"></use>
+              </svg>
+              Distributor
+            </a>
+          </li>
+          <li
+            className="side-nav__item"
+            onTouchStart={(e) => e.currentTarget.classList.add("hover")}
+            onTouchEnd={(e) => e.currentTarget.classList.remove("hover")}
+          >
+            <a
+              href="#"
+              className="side-nav__link"
+              onClick={() => {
                 navigate("/visit");
                 setShowSideNav(false);
               }}

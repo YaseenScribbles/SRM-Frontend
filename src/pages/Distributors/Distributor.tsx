@@ -16,12 +16,11 @@ import { handleError } from "../../assets/helperFunctions";
 import PageHeading from "../../components/PageHeading";
 import Grid from "../../components/Grid";
 import Loading from "react-loading";
-// import AddEditContact from "./AddEditContact";
-const AddEditContact = lazy(() => import("./AddEditContact"));
+const AddEditDistributor = lazy(() => import("./AddEditDistributor"));
 
 type Props = {};
 
-const Contact: React.FC<Props> = ({}) => {
+const Distributor: React.FC<Props> = ({}) => {
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState({
@@ -68,10 +67,6 @@ const Contact: React.FC<Props> = ({}) => {
       header: "Email",
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("distributor", {
-      header: "Distributor",
-      cell: (info) => info.getValue(),
-    }),
     columnHelper.accessor("pincode", {
       header: "Pincode",
       cell: (info) => info.getValue(),
@@ -109,16 +104,16 @@ const Contact: React.FC<Props> = ({}) => {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const getContacts = async () => {
+  const getDistributors = async () => {
     try {
       setLoading(true);
-      const resp = await axios.get(`${url}contacts`, {
+      const resp = await axios.get(`${url}distributors`, {
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${user?.token}`,
         },
       });
-      setData(resp.data.contacts);
+      setData(resp.data.distributors);
     } catch (error) {
       handleError(error);
     } finally {
@@ -127,14 +122,14 @@ const Contact: React.FC<Props> = ({}) => {
   };
 
   useEffect(() => {
-    getContacts();
+    getDistributors();
   }, []);
 
   return (
     <>
       <PageHeading
-        title="Contact"
-        firstButtonText="Add Contact"
+        title="Distributor"
+        firstButtonText="Add Distributor"
         firstButtonIcon="plus"
         firstButtonFunction={() => setShowModal(true)}
         loading={loading}
@@ -145,35 +140,27 @@ const Contact: React.FC<Props> = ({}) => {
           setGlobalFilter={setGlobalFilter}
           table={table}
           tableData={data}
-          reportName="Contacts"
+          reportName="Distributors"
           excludeSortingColumns={["actions"]}
         />
       )}
       <Suspense
         fallback={
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+          <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
             <Loading color={colorSecondary} type="bars" />
           </div>
         }
       >
-        <AddEditContact
+        <AddEditDistributor
           show={showModal}
           setShow={setShowModal}
           editId={editId}
           setEditId={setEditId}
-          onSave={getContacts}
+          onSave={getDistributors}
         />
       </Suspense>
     </>
   );
 };
 
-export default Contact;
+export default Distributor;

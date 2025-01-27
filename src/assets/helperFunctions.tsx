@@ -1,5 +1,8 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import OrderPDF from "../pages/Orders/OrderPDF";
+import { pdf } from "@react-pdf/renderer";
+import { url } from "./constants";
 
 export const getFinancialYear = (): string => {
   const month = new Date().getMonth();
@@ -31,5 +34,53 @@ export const handleError = (error: any, containerId = "layout") => {
     } else if (err) {
       toast.warning(err?.data, { containerId: containerId });
     }
+  }
+};
+
+export const sendEmail = async (id: string, token: string) => {
+  try {
+    const resp = await axios.get(`${url}order-pdf/${id}`, {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const { master, details } = resp.data;
+
+    const order = {
+      orderNo: master[0].id,
+      date: master[0].date,
+      contact: master[0].contact,
+      address: master[0].address,
+      phone: master[0].phone,
+      remarks: master[0].remarks,
+      createdBy: master[0].user,
+    };
+
+    const doc = <OrderPDF order={order} orderDetails={details} />;
+    // Create an instance of the PDF and wait for it to render
+    const pdfInstance = pdf(doc);
+    const blob = await pdfInstance.toBlob();
+
+    const response = await axios.post(
+      `${url}email-pdf`,
+      {
+        id,
+        pdf: blob,
+      },
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`
+        },
+      }
+    );
+
+    const { message } = response.data;
+    toast.success(message, { containerId: "layout" });
+  } catch (error) {
+    handleError(error);
   }
 };
