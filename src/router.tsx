@@ -40,9 +40,9 @@ const router = createBrowserRouter([
       {
         path: "/order",
         element: <Order />,
-      }
+      },   
     ],
-  },  
+  },
 ]);
 
 export default router;

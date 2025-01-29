@@ -124,7 +124,8 @@ const Order: React.FC<Props> = ({}) => {
             sendEmail={async () => {
               try {
                 setLoading(true);
-                await sendEmail(info.row.original.id, user?.token!);
+                toast.info("Generating PDF and sending email...", { containerId: "layout" });
+                sendEmail(info.row.original.id, user?.token!);
               } catch (error: any) {
                 toast.warn(error.message, { containerId: "layout" });
               } finally {

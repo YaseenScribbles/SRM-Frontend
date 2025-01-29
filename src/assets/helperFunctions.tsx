@@ -63,7 +63,7 @@ export const sendEmail = async (id: string, token: string) => {
     const pdfInstance = pdf(doc);
     const blob = await pdfInstance.toBlob();
 
-    const response = await axios.post(
+    const emailResponse = axios.post(
       `${url}email-pdf`,
       {
         id,
@@ -73,13 +73,21 @@ export const sendEmail = async (id: string, token: string) => {
         headers: {
           Accept: "application/json",
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
       }
     );
 
-    const { message } = response.data;
-    toast.success(message, { containerId: "layout" });
+    const results = await Promise.allSettled([emailResponse]);
+
+    results.forEach((result, _) => {
+      if (result.status === "fulfilled") {
+        toast.success("Email sent successfully", { containerId: "layout" });
+      } else {
+        toast.error("Failed to send email", { containerId: "layout" });
+        console.error(result.reason);
+      }
+    });
   } catch (error) {
     handleError(error);
   }

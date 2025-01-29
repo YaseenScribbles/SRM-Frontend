@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Font,
 } from "@react-pdf/renderer";
+import { v4 as uuid } from "uuid"
 
 type Props = {
   order: Order;
@@ -108,6 +109,11 @@ const styles = StyleSheet.create({
   td: {
     flex: 1,
     padding: 4,
+    display: "flex",
+    flexWrap: "nowrap",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    alignSelf: "center",        
   },
   th: {
     flex: 1,
@@ -126,8 +132,11 @@ const styles = StyleSheet.create({
 });
 
 const OrderPDF: React.FC<Props> = ({ order, orderDetails }) => {
-  const rowsPerPage = 22;
-  const chunkArray = (array: OrderItem[], size: number) => {
+  const rowsPerPage = 10;
+  const chunkArray = (
+    array: { brand: string; style: string }[],
+    size: number
+  ) => {
     const chunks = [];
     for (let i = 0; i < array.length; i += size) {
       chunks.push(array.slice(i, i + size));
@@ -135,12 +144,30 @@ const OrderPDF: React.FC<Props> = ({ order, orderDetails }) => {
     return chunks;
   };
 
-  const paginatedOrderDetails = chunkArray(orderDetails, rowsPerPage);
+  const uniqueSizes = Array.from(
+    new Set(orderDetails.map((order: OrderItem) => order.size))
+  ).sort((a: any, b: any) => a - b);
+
+  const uniqueBrandsAndStyles = Array.from(
+    new Map(
+      orderDetails.map((item) => [
+        `${item.name}-${item.style}`,
+        { brand: item.name, style: item.style },
+      ])
+    ).values()
+  );
+ 
+  const paginatedOrderDetails = chunkArray(uniqueBrandsAndStyles, rowsPerPage);
 
   return (
     <Document>
       {paginatedOrderDetails.map((details, pageIndex) => (
-        <Page size="A4" style={styles.page} key={pageIndex}>
+        <Page
+          size="A4"
+          orientation="landscape"
+          style={styles.page}
+          key={uuid()}
+        >
           {/* Page Header */}
           <View style={[styles.companyName, styles.center]}>
             <Text>ESSA GARMENTS PRIVATE LIMITED</Text>
@@ -204,20 +231,22 @@ const OrderPDF: React.FC<Props> = ({ order, orderDetails }) => {
           <View style={[styles.table, styles.mt_sm]}>
             {/* Table Header */}
             <View style={styles.tr}>
-              <View style={[styles.th, { flexBasis: "10%" }]}>
+              <View style={[styles.th]}>
                 <Text>S No</Text>
               </View>
-              <View style={[styles.th, { flexBasis: "60%" }]}>
-                <Text>Brand</Text>
+              <View style={[styles.th, { flexBasis: "25%" }]}>
+                <Text wrap={false}>Brand</Text>
               </View>
-              <View style={[styles.th, { flexBasis: "10%" }]}>
+              <View style={[styles.th, { flexBasis: "5%" }]}>
                 <Text>Style</Text>
               </View>
-              <View style={[styles.th, { flexBasis: "10%" }]}>
-                <Text>Size</Text>
-              </View>
-              <View style={[styles.th, { flexBasis: "10%" }]}>
-                <Text>Quantity</Text>
+              {uniqueSizes.map((size: any) => (
+                <View key={uuid()} style={[styles.th]}>
+                  <Text>{size}</Text>
+                </View>
+              ))}
+              <View style={[styles.th, { textAlign: "right" }]}>
+                <Text>Total</Text>
               </View>
             </View>
 
@@ -225,24 +254,45 @@ const OrderPDF: React.FC<Props> = ({ order, orderDetails }) => {
             {details.map((detail, rowIndex) => (
               <View
                 style={[styles.tr, { borderBottom: "0.5px solid #f1f1f1" }]}
-                key={rowIndex}
+                key={uuid()}
               >
-                <View style={[styles.td, { flexBasis: "10%" }]}>
-                  <Text>{detail.s_no}</Text>
+                <View style={[styles.td, { textAlign: "center" }]}>
+                  <Text>{pageIndex * rowsPerPage + rowIndex + 1}</Text>
                 </View>
-                <View style={[styles.td, { flexBasis: "60%" }]}>
-                  <Text>{detail.name}</Text>
+                <View style={[styles.td, { flexBasis: "25%" }]}>
+                  <Text>{detail.brand}</Text>
                 </View>
-                <View style={[styles.td, { flexBasis: "10%" }]}>
+                <View style={[styles.td, { flexBasis: "5%" }]}>
                   <Text>{detail.style}</Text>
                 </View>
-                <View style={[styles.td, { flexBasis: "10%" }]}>
-                  <Text>{detail.size}</Text>
-                </View>
-                <View
-                  style={[styles.td, { flexBasis: "10%", textAlign: "right" }]}
-                >
-                  <Text>{detail.qty}</Text>
+                {uniqueSizes.map((size) => (
+                  <View key={uuid()} style={[styles.td]}>
+                    <Text>
+                      {(() => {
+                        const qty = Number(
+                          orderDetails.find(
+                            (order) =>
+                              order.name === detail.brand &&
+                              order.style === detail.style &&
+                              order.size === size
+                          )?.qty || 0
+                        );
+                        return qty > 0 ? qty.toFixed(0) : "";
+                      })()}
+                    </Text>
+                  </View>
+                ))}
+                <View style={[styles.td, { textAlign: "right" }]}>
+                  <Text>
+                    {orderDetails
+                      .filter(
+                        (order) =>
+                          order.name == detail.brand &&
+                          order.style == detail.style
+                      )
+                      .reduce((acc, curr) => acc + +curr.qty, 0)
+                      .toFixed(0)}
+                  </Text>
                 </View>
               </View>
             ))}
@@ -250,17 +300,17 @@ const OrderPDF: React.FC<Props> = ({ order, orderDetails }) => {
             {/* Page Footer (Totals on the Last Page) */}
             {pageIndex === paginatedOrderDetails.length - 1 && (
               <View style={styles.tr}>
-                <View style={[styles.th, { flexBasis: "10%" }]}></View>
-                <View style={[styles.th, { flexBasis: "60%" }]}></View>
-                <View style={[styles.th, { flexBasis: "10%" }]}></View>
-                <View style={[styles.th, { flexBasis: "10%" }]}></View>
-                <View
-                  style={[styles.th, { flexBasis: "10%", textAlign: "right" }]}
-                >
+                <View style={[styles.th]}></View>
+                <View style={[styles.th, { flexBasis: "25%" }]}></View>
+                <View style={[styles.th, { flexBasis: "5%" }]}></View>
+                {uniqueSizes.map(() => (
+                  <View key={uuid()} style={[styles.th]}></View>
+                ))}
+                <View style={[styles.th, { textAlign: "right" }]}>
                   <Text>
                     {orderDetails
                       .reduce((acc, curr) => acc + +curr.qty, 0)
-                      .toFixed(2)}
+                      .toFixed(0)}
                   </Text>
                 </View>
               </View>
