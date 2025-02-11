@@ -19,6 +19,7 @@ type Props = {
   value: Option | null;
   handleChange: Dispatch<SetStateAction<Option | null>>;
   isDisabled?: boolean;
+  isLabelReq?: boolean;
 };
 
 const Select: React.FC<Props> = ({
@@ -28,6 +29,7 @@ const Select: React.FC<Props> = ({
   value,
   handleChange,
   isDisabled = false,
+  isLabelReq = true,
 }) => {
   return (
     <>
@@ -71,10 +73,13 @@ const Select: React.FC<Props> = ({
             neutral80: colorGreyDark2,
           },
         })}
+        isClearable
       />
-      <label htmlFor={id} className={`${value ? "show" : ""}`}>
-        {placeholder}
-      </label>
+      {isLabelReq && (
+        <label htmlFor={id} className={`${value ? "show" : ""}`}>
+          {placeholder}
+        </label>
+      )}
     </>
   );
 };

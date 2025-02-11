@@ -61,8 +61,19 @@ const Navbar: React.FC<Props> = ({}) => {
     <>
       <nav className="nav">
         <ul className="nav__list">
-          <li className="nav__item">
-            <a href="#" className="nav__link">
+          <li
+            className="nav__item"
+          >
+            <a
+              href="#"
+              className="nav__link"
+              onClick={() => {
+                if (user?.role != "user") {
+                  navigate("/dashboard");
+                  setShowSideNav(false);
+                }
+              }}
+            >
               <svg className="app-icon">
                 <use xlinkHref="/icons/sprite.svg#icon-t-shirt"></use>
               </svg>

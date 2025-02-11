@@ -25,4 +25,20 @@
             fill: currentColor;
         }
     }
+
+    .form {
+        display: flex;
+        
+        .form-group {
+            position: relative;
+
+            &:not(:last-of-type) {
+                margin-inline-end: 1rem;
+            }
+        }
+
+        .select {
+            width: 100%;
+        }
+    }
 }
