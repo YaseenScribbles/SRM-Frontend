@@ -12,12 +12,14 @@ import {
 import Grid from "../../components/Grid";
 import { handleError } from "../../assets/helperFunctions";
 import axios from "axios";
-import { colorSecondary, url } from "../../assets/constants";
+import { colorSecondary, menus, url } from "../../assets/constants";
 import { useUserContext } from "../../contexts/UserContext";
 // import AddEditUser from "./AddEditUser";
 const AddEditUser = lazy(() => import("./AddEditUser"));
 import TableButtons from "../../components/TableButtons";
 import Loading from "react-loading";
+import UserRights from "./UserRights";
+import { toast } from "react-toastify";
 
 type Props = {};
 
@@ -34,6 +36,8 @@ const User: React.FC<Props> = ({}) => {
   const { user } = useUserContext();
   const [showAddModal, setShowAddModal] = useState(false);
   const [editId, setEditId] = useState(0);
+  const [showRights, setShowRights] = useState(false);
+  const [userRightId, setUserRightId] = useState(0);
 
   const columns = [
     columnHelper.accessor("id", {
@@ -77,10 +81,17 @@ const User: React.FC<Props> = ({}) => {
       cell: (info) => {
         return (
           <TableButtons
-            edit
+            edit={
+              user?.rights.find((r) => r.menu === menus.User)?.update === "1"
+            }
             editFunction={() => {
               setEditId(info.row.original.id);
               setShowAddModal(true);
+            }}
+            rights={user?.role !== "user"}
+            rightsFunction={() => {
+              setUserRightId(info.row.original.id);
+              setShowRights(true);
             }}
           />
         );
@@ -132,7 +143,15 @@ const User: React.FC<Props> = ({}) => {
         title="Users"
         firstButtonText="Add User"
         firstButtonIcon="plus"
-        firstButtonFunction={() => setShowAddModal(true)}
+        firstButtonFunction={() => {
+          if (
+            user?.rights.find((r) => r.menu === menus.User)?.create === "1"
+          )
+            setShowAddModal(true)
+          else {
+            toast.warn("Please contact admin", { containerId: "layout" });
+          }
+        }}
         loading={loading}
       />
       {data.length > 0 && (
@@ -147,7 +166,15 @@ const User: React.FC<Props> = ({}) => {
       )}
       <Suspense
         fallback={
-          <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Loading color={colorSecondary} type="bars" />
           </div>
         }
@@ -158,6 +185,28 @@ const User: React.FC<Props> = ({}) => {
           editId={editId}
           setEditId={setEditId}
           onSave={getUsers}
+        />
+      </Suspense>
+      <Suspense
+        fallback={
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Loading color={colorSecondary} type="bars" />
+          </div>
+        }
+      >
+        <UserRights
+          show={showRights}
+          setShow={setShowRights}
+          editId={userRightId}
+          setEditId={setUserRightId}
         />
       </Suspense>
     </>

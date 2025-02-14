@@ -42,6 +42,7 @@ const Login: React.FC<Props> = ({}) => {
         email: response.user.email,
         role: response.user.role,
         token: response.token,
+        rights: response.rights
       };
       setUser(user);
       navigate("/", { replace: true });

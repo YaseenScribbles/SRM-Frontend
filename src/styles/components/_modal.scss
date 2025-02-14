@@ -30,6 +30,11 @@
     min-width: 95%;
     max-height: 85%;
     overflow-y: auto;
+
+    &.rights {
+      max-width: 99%;
+    }
+
   }
 
   @starting-style {
@@ -69,6 +74,40 @@
 
   &__body {
     padding: 2rem 1rem;
+
+    .table-container {
+      margin-block-start: -0.75rem;      
+      margin-block-end: 1rem;
+      width: 100%;
+      .table {
+        width: 100%;
+        font-size: 1.4rem;
+        thead {
+          background-color: var(--color-grey-light-3);          
+          color: var(--color-grey-dark-1);
+          th {
+            padding: 0.5rem 1rem;
+            text-align: left;
+            text-decoration: underline;
+            cursor: pointer;
+          }
+        }
+
+        tbody {
+
+          td {
+            padding: 0.5rem 1rem; 
+            
+            label {
+              justify-content: center;
+            }
+          }
+
+        }
+
+      }
+
+    }
   }
 
   &__inputs {

@@ -1,11 +1,29 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
+type Right = {
+  menu:
+    | "Dashboard"
+    | "User"
+    | "Purpose"
+    | "Contact"
+    | "Distributor"
+    | "Visit"
+    | "Order"
+    | string;
+  create: "1" | "0";
+  delete: "1" | "0";
+  print: "1" | "0";
+  update: "1" | "0";
+  view: "1" | "0";
+};
+
 export interface User {
   id: number;
   name: string;
   email: string;
   role: string;
   token: string;
+  rights: Right[];
 }
 
 type UserContextType = {
@@ -15,9 +33,9 @@ type UserContextType = {
 };
 
 const UserContext = createContext<UserContextType>({
-    user: null,
-    setUser: () => {},
-    removeUser: () => {},
+  user: null,
+  setUser: () => {},
+  removeUser: () => {},
 });
 
 export const useUserContext = () => useContext(UserContext);

@@ -7,6 +7,8 @@ type Props = {
   downloadPDF?: () => void;
   email?: boolean;
   sendEmail?: () => void;
+  rights?: boolean;
+  rightsFunction?: () => void;
 };
 
 const TableButtons: React.FC<Props> = ({
@@ -16,6 +18,8 @@ const TableButtons: React.FC<Props> = ({
   downloadPDF,
   email,
   sendEmail,
+  rights,
+  rightsFunction
 }) => {
   // const isAndroid = /Android/i.test(navigator.userAgent);
 
@@ -46,6 +50,11 @@ const TableButtons: React.FC<Props> = ({
       {email && (
         <svg className="pdf" onClick={sendEmail}>
           <use xlinkHref="/icons/sprite.svg#icon-mail"></use>
+        </svg>
+      )}
+      {rights && (
+        <svg className="pdf" onClick={rightsFunction}>
+          <use xlinkHref="/icons/sprite.svg#icon-cog"></use>
         </svg>
       )}
     </div>

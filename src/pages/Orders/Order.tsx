@@ -1,7 +1,7 @@
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import PageHeading from "../../components/PageHeading";
 import Loading from "react-loading";
-import { colorSecondary, url } from "../../assets/constants";
+import { colorSecondary, menus, url } from "../../assets/constants";
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -69,12 +69,16 @@ const Order: React.FC<Props> = ({}) => {
       cell: (info) => {
         return (
           <TableButtons
-            edit
+            edit={
+              user?.rights.find((r) => r.menu === menus.Order)?.update === "1"
+            }
             editFunction={() => {
               setEditId(info.row.original.id);
               setShowModal(true);
             }}
-            pdf
+            pdf={
+              user?.rights.find((r) => r.menu === menus.Order)?.print === "1"
+            }
             downloadPDF={async () => {
               try {
                 setLoading(true);
@@ -120,11 +124,15 @@ const Order: React.FC<Props> = ({}) => {
                 setLoading(false);
               }
             }}
-            email
+            email={
+              user?.rights.find((r) => r.menu === menus.Order)?.print === "1"
+            }
             sendEmail={async () => {
               try {
                 setLoading(true);
-                toast.info("Generating PDF and sending email...", { containerId: "layout" });
+                toast.info("Generating PDF and sending email...", {
+                  containerId: "layout",
+                });
                 sendEmail(info.row.original.id, user?.token!);
               } catch (error: any) {
                 toast.warn(error.message, { containerId: "layout" });
@@ -182,7 +190,15 @@ const Order: React.FC<Props> = ({}) => {
       <PageHeading
         title="Orders"
         firstButtonText="Add Order"
-        firstButtonFunction={() => setShowModal(true)}
+        firstButtonFunction={() => {
+          if (
+            user?.rights.find((r) => r.menu === menus.Order)?.create === "1"
+          )
+            setShowModal(true);
+          else {
+            toast.warn("Please contact admin", { containerId: "layout" });
+          }
+        }}
         firstButtonIcon="plus"
         loading={loading}
       />

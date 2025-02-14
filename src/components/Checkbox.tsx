@@ -2,7 +2,7 @@ import React, { ChangeEvent } from "react";
 
 type Props = {
   name: string;
-  labelText: string;
+  labelText?: string;
   value: boolean;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };
@@ -29,7 +29,7 @@ const Checkbox: React.FC<Props> = ({
             <use xlinkHref="/icons/sprite.svg#icon-check"></use>
           </svg>
         </div>
-        <span>{labelText}</span>
+        {labelText && <span>{labelText}</span>}
       </label>
     </>
   );

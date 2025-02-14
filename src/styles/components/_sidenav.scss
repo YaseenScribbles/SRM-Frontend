@@ -33,6 +33,11 @@
     color: var(--color-grey-light-1);
     padding: 1rem 2.5rem;
     transition: all 0.25s;
+
+    &.center {
+      justify-content: center;
+      background-color: rgba(var(--color-secondary-rgb), 0.1);
+    }
   }
 
   &__item {

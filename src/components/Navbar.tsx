@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useUserContext } from "../contexts/UserContext";
 import axios from "axios";
-import { colorGreyLight1, url } from "../assets/constants";
+import { colorGreyLight1, menus, url } from "../assets/constants";
 import { handleError } from "../assets/helperFunctions";
 import { useNavigate } from "react-router";
 import Loading from "react-loading";
@@ -61,14 +61,15 @@ const Navbar: React.FC<Props> = ({}) => {
     <>
       <nav className="nav">
         <ul className="nav__list">
-          <li
-            className="nav__item"
-          >
+          <li className="nav__item">
             <a
               href="#"
               className="nav__link"
               onClick={() => {
-                if (user?.role != "user") {
+                if (
+                  user?.rights.find((r) => r.menu === menus.Dashboard)?.view ===
+                  "1"
+                ) {
                   navigate("/dashboard");
                   setShowSideNav(false);
                 }
@@ -96,120 +97,138 @@ const Navbar: React.FC<Props> = ({}) => {
       </nav>
       <nav className={`side-nav ${showSideNav ? "open" : ""}`} ref={sideBarRef}>
         <ul className="side-nav__list">
-          <li
-            className="side-nav__item"
-            onTouchStart={(e) => e.currentTarget.classList.add("hover")}
-            onTouchEnd={(e) => e.currentTarget.classList.remove("hover")}
-          >
-            <a
-              href="#"
-              className="side-nav__link"
-              onClick={() => {
-                navigate("/user");
-                setShowSideNav(false);
-              }}
-            >
-              <svg className="side-nav__icon">
-                <use xlinkHref="/icons/sprite.svg#icon-user"></use>
-              </svg>
-              User
+          <li className="side-nav__item">
+            <a href="#" className="side-nav__link center">
+              {`Hi, ${user?.name} 👋🏼`}
             </a>
           </li>
-          <li
-            className="side-nav__item"
-            onTouchStart={(e) => e.currentTarget.classList.add("hover")}
-            onTouchEnd={(e) => e.currentTarget.classList.remove("hover")}
-          >
-            <a
-              href="#"
-              className="side-nav__link"
-              onClick={() => {
-                navigate("/purpose");
-                setShowSideNav(false);
-              }}
+          {user?.rights.find((r) => r.menu === menus.User)?.view === "1" && (
+            <li
+              className="side-nav__item"
+              onTouchStart={(e) => e.currentTarget.classList.add("hover")}
+              onTouchEnd={(e) => e.currentTarget.classList.remove("hover")}
             >
-              <svg className="side-nav__icon">
-                <use xlinkHref="/icons/sprite.svg#icon-target"></use>
-              </svg>
-              Purpose
-            </a>
-          </li>
-          <li
-            className="side-nav__item"
-            onTouchStart={(e) => e.currentTarget.classList.add("hover")}
-            onTouchEnd={(e) => e.currentTarget.classList.remove("hover")}
-          >
-            <a
-              href="#"
-              className="side-nav__link"
-              onClick={() => {
-                navigate("/contact");
-                setShowSideNav(false);
-              }}
+              <a
+                href="#"
+                className="side-nav__link"
+                onClick={() => {
+                  navigate("/user");
+                  setShowSideNav(false);
+                }}
+              >
+                <svg className="side-nav__icon">
+                  <use xlinkHref="/icons/sprite.svg#icon-user"></use>
+                </svg>
+                User
+              </a>
+            </li>
+          )}
+          {user?.rights.find((r) => r.menu === menus.Purpose)?.view === "1" && (
+            <li
+              className="side-nav__item"
+              onTouchStart={(e) => e.currentTarget.classList.add("hover")}
+              onTouchEnd={(e) => e.currentTarget.classList.remove("hover")}
             >
-              <svg className="side-nav__icon">
-                <use xlinkHref="/icons/sprite.svg#icon-address-book"></use>
-              </svg>
-              Contact
-            </a>
-          </li>
-          <li
-            className="side-nav__item"
-            onTouchStart={(e) => e.currentTarget.classList.add("hover")}
-            onTouchEnd={(e) => e.currentTarget.classList.remove("hover")}
-          >
-            <a
-              href="#"
-              className="side-nav__link"
-              onClick={() => {
-                navigate("/distributor");
-                setShowSideNav(false);
-              }}
+              <a
+                href="#"
+                className="side-nav__link"
+                onClick={() => {
+                  navigate("/purpose");
+                  setShowSideNav(false);
+                }}
+              >
+                <svg className="side-nav__icon">
+                  <use xlinkHref="/icons/sprite.svg#icon-target"></use>
+                </svg>
+                Purpose
+              </a>
+            </li>
+          )}
+          {user?.rights.find((r) => r.menu === menus.Contact)?.view === "1" && (
+            <li
+              className="side-nav__item"
+              onTouchStart={(e) => e.currentTarget.classList.add("hover")}
+              onTouchEnd={(e) => e.currentTarget.classList.remove("hover")}
             >
-              <svg className="side-nav__icon">
-                <use xlinkHref="/icons/sprite.svg#icon-network-chart-2"></use>
-              </svg>
-              Distributor
-            </a>
-          </li>
-          <li
-            className="side-nav__item"
-            onTouchStart={(e) => e.currentTarget.classList.add("hover")}
-            onTouchEnd={(e) => e.currentTarget.classList.remove("hover")}
-          >
-            <a
-              href="#"
-              className="side-nav__link"
-              onClick={() => {
-                navigate("/visit");
-                setShowSideNav(false);
-              }}
+              <a
+                href="#"
+                className="side-nav__link"
+                onClick={() => {
+                  navigate("/contact");
+                  setShowSideNav(false);
+                }}
+              >
+                <svg className="side-nav__icon">
+                  <use xlinkHref="/icons/sprite.svg#icon-address-book"></use>
+                </svg>
+                Contact
+              </a>
+            </li>
+          )}
+          {user?.rights.find((r) => r.menu === menus.Distributor)?.view ===
+            "1" && (
+            <li
+              className="side-nav__item"
+              onTouchStart={(e) => e.currentTarget.classList.add("hover")}
+              onTouchEnd={(e) => e.currentTarget.classList.remove("hover")}
             >
-              <svg className="side-nav__icon">
-                <use xlinkHref="/icons/sprite.svg#icon-eye"></use>
-              </svg>
-              Visit
-            </a>
-          </li>
-          <li
-            className="side-nav__item"
-            onTouchStart={(e) => e.currentTarget.classList.add("hover")}
-            onTouchEnd={(e) => e.currentTarget.classList.remove("hover")}
-          >
-            <a
-              href="#"
-              className="side-nav__link"
-              onClick={() => {
-                navigate("/order");
-                setShowSideNav(false);
-              }}
+              <a
+                href="#"
+                className="side-nav__link"
+                onClick={() => {
+                  navigate("/distributor");
+                  setShowSideNav(false);
+                }}
+              >
+                <svg className="side-nav__icon">
+                  <use xlinkHref="/icons/sprite.svg#icon-network-chart-2"></use>
+                </svg>
+                Distributor
+              </a>
+            </li>
+          )}
+          {user?.rights.find((r) => r.menu === menus.Visit)?.view === "1" && (
+            <li
+              className="side-nav__item"
+              onTouchStart={(e) => e.currentTarget.classList.add("hover")}
+              onTouchEnd={(e) => e.currentTarget.classList.remove("hover")}
             >
-              <svg className="side-nav__icon">
-                <use xlinkHref="/icons/sprite.svg#icon-file-text"></use>
-              </svg>
-              Order
-            </a>
-          </li>
+              <a
+                href="#"
+                className="side-nav__link"
+                onClick={() => {
+                  navigate("/visit");
+                  setShowSideNav(false);
+                }}
+              >
+                <svg className="side-nav__icon">
+                  <use xlinkHref="/icons/sprite.svg#icon-eye"></use>
+                </svg>
+                Visit
+              </a>
+            </li>
+          )}
+          {user?.rights.find((r) => r.menu === menus.Order)?.view === "1" && (
+            <li
+              className="side-nav__item"
+              onTouchStart={(e) => e.currentTarget.classList.add("hover")}
+              onTouchEnd={(e) => e.currentTarget.classList.remove("hover")}
+            >
+              <a
+                href="#"
+                className="side-nav__link"
+                onClick={() => {
+                  navigate("/order");
+                  setShowSideNav(false);
+                }}
+              >
+                <svg className="side-nav__icon">
+                  <use xlinkHref="/icons/sprite.svg#icon-file-text"></use>
+                </svg>
+                Order
+              </a>
+            </li>
+          )}
           <li
             className="side-nav__item"
             onTouchStart={(e) => e.currentTarget.classList.add("hover")}

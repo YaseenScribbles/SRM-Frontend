@@ -8,3 +8,12 @@ export const colorGreyLight3 = "#f0eeee";
 export const colorGreyLight4 = "#ccc";
 export const colorGreyDark2 = "#777";
 export const colorGreyDark3 = "#999";
+export const menus = {
+    Dashboard: "Dashboard",
+    User: "User",
+    Purpose: "Purpose",
+    Contact: "Contact",
+    Distributor: "Distributor",
+    Visit: "Visit",
+    Order: "Order",
+}

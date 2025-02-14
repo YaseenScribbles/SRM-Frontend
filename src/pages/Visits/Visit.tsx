@@ -11,11 +11,12 @@ import React, { lazy, Suspense, useEffect, useState } from "react";
 import { useUserContext } from "../../contexts/UserContext";
 import TableButtons from "../../components/TableButtons";
 import axios from "axios";
-import { colorSecondary, url } from "../../assets/constants";
+import { colorSecondary, menus, url } from "../../assets/constants";
 import { handleError } from "../../assets/helperFunctions";
 import PageHeading from "../../components/PageHeading";
 import Grid from "../../components/Grid";
 import Loading from "react-loading";
+import { toast } from "react-toastify";
 // import AddEditVisit from "./AddEditVisit";
 const AddEditVisit = lazy(() => import("./AddEditVisit"));
 
@@ -61,7 +62,9 @@ const Visit: React.FC<Props> = ({}) => {
       cell: (info) => {
         return (
           <TableButtons
-            edit
+            edit={
+              user?.rights.find((r) => r.menu === menus.Visit)?.update === "1"
+            }
             editFunction={() => {
               setEditId(info.row.original.id);
               setShowModal(true);
@@ -116,7 +119,13 @@ const Visit: React.FC<Props> = ({}) => {
         title="Visit"
         firstButtonText="Add Visit"
         firstButtonIcon="plus"
-        firstButtonFunction={() => setShowModal(true)}
+        firstButtonFunction={() => {
+          if (user?.rights.find((r) => r.menu === menus.Visit)?.create === "1")
+            setShowModal(true);
+          else {
+            toast.warn("Please contact admin", { containerId: "layout" });
+          }
+        }}
         loading={loading}
       />
       {data.length > 0 && (
@@ -131,7 +140,15 @@ const Visit: React.FC<Props> = ({}) => {
       )}
       <Suspense
         fallback={
-          <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Loading color={colorSecondary} type="bars" />
           </div>
         }

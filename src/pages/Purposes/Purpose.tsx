@@ -14,8 +14,9 @@ import { useUserContext } from "../../contexts/UserContext";
 import AddEditPurpose from "./AddEditPurpose";
 import TableButtons from "../../components/TableButtons";
 import axios from "axios";
-import { url } from "../../assets/constants";
+import { menus, url } from "../../assets/constants";
 import { handleError } from "../../assets/helperFunctions";
+import { toast } from "react-toastify";
 
 type Props = {};
 
@@ -55,7 +56,9 @@ const Purpose: React.FC<Props> = ({}) => {
       cell: (info) => {
         return (
           <TableButtons
-            edit
+            edit={
+              user?.rights.find((r) => r.menu === menus.Purpose)?.update === "1"
+            }
             editFunction={() => {
               setEditId(info.row.original.id);
               setShowModal(true);
@@ -110,7 +113,15 @@ const Purpose: React.FC<Props> = ({}) => {
         title="Purpose"
         firstButtonText="Add Purpose"
         firstButtonIcon="plus"
-        firstButtonFunction={() => setShowModal(true)}
+        firstButtonFunction={() => {
+          if (
+            user?.rights.find((r) => r.menu === menus.Purpose)?.create === "1"
+          )
+            setShowModal(true);
+          else {
+            toast.warn("Please contact admin", { containerId: "layout" });
+          }
+        }}
         loading={loading}
       />
       {data.length > 0 && (

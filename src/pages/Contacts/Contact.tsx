@@ -11,11 +11,12 @@ import React, { useEffect, useState, lazy, Suspense } from "react";
 import { useUserContext } from "../../contexts/UserContext";
 import TableButtons from "../../components/TableButtons";
 import axios from "axios";
-import { colorSecondary, url } from "../../assets/constants";
+import { colorSecondary, menus, url } from "../../assets/constants";
 import { handleError } from "../../assets/helperFunctions";
 import PageHeading from "../../components/PageHeading";
 import Grid from "../../components/Grid";
 import Loading from "react-loading";
+import { toast } from "react-toastify";
 // import AddEditContact from "./AddEditContact";
 const AddEditContact = lazy(() => import("./AddEditContact"));
 
@@ -81,7 +82,9 @@ const Contact: React.FC<Props> = ({}) => {
       cell: (info) => {
         return (
           <TableButtons
-            edit
+            edit={
+              user?.rights.find((r) => r.menu === menus.Contact)?.update === "1"
+            }
             editFunction={() => {
               setEditId(info.row.original.id);
               setShowModal(true);
@@ -136,7 +139,15 @@ const Contact: React.FC<Props> = ({}) => {
         title="Contact"
         firstButtonText="Add Contact"
         firstButtonIcon="plus"
-        firstButtonFunction={() => setShowModal(true)}
+        firstButtonFunction={() => {
+          if (
+            user?.rights.find((r) => r.menu === menus.Contact)?.create === "1"
+          )
+            setShowModal(true);
+          else {
+            toast.warn("Please contact admin", { containerId: "layout" });
+          }
+        }}
         loading={loading}
       />
       {data.length > 0 && (
