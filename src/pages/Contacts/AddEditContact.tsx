@@ -66,12 +66,20 @@ const AddEditContact: React.FC<Props> = ({
       toast.warn("Please fill the name", { containerId: "layout" });
       return;
     }
+
+    if (data.district == "") {
+      toast.warn("Please fill the district", { containerId: "layout" });
+      return;
+    }
+
     if (data.state_id == "") {
       toast.warn("Please select the state", { containerId: "layout" });
       return;
     }
     if (!data.distributor_id && !data.email) {
-      toast.warn("Please pick distributor / fill email", { containerId: "layout" });
+      toast.warn("Please pick distributor / fill email", {
+        containerId: "layout",
+      });
       return;
     }
 
@@ -193,7 +201,9 @@ const AddEditContact: React.FC<Props> = ({
       setData((p) => ({
         ...p,
         ...(selectedState && { state_id: selectedState.value }),
-        ...(selectedDistributor && { distributor_id: selectedDistributor.value }),
+        ...(selectedDistributor && {
+          distributor_id: selectedDistributor.value,
+        }),
       }));
     }
   }, [selectedState, selectedDistributor]);

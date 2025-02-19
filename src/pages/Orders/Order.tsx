@@ -3,6 +3,7 @@ import PageHeading from "../../components/PageHeading";
 import Loading from "react-loading";
 import { colorSecondary, menus, url } from "../../assets/constants";
 import {
+  ColumnDef,
   createColumnHelper,
   getCoreRowModel,
   getFilteredRowModel,
@@ -37,16 +38,23 @@ const Order: React.FC<Props> = ({}) => {
   const columnHelper = createColumnHelper<any>();
   const { user } = useUserContext();
 
-  const columns = [
+  const columns: ColumnDef<any>[] = [
+    {
+      id: "s_no",
+      header: "S. No",
+      cell: ({ row, table }) => {
+        const pageIndex = table.getState().pagination.pageIndex; // Current page index
+        const pageSize = table.getState().pagination.pageSize; // Items per page        
+        return pageIndex * pageSize + (row.index % pageSize) + 1; // Serial number calculation
+      },
+    },
     columnHelper.accessor("id", {
       header: "Order No.",
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("date", {
       header: "Date",
-      cell: (info) => {
-        return new Date(info.getValue()).toLocaleDateString();
-      },
+      cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("contact", {
       header: "Contact",
@@ -191,9 +199,7 @@ const Order: React.FC<Props> = ({}) => {
         title="Orders"
         firstButtonText="Add Order"
         firstButtonFunction={() => {
-          if (
-            user?.rights.find((r) => r.menu === menus.Order)?.create === "1"
-          )
+          if (user?.rights.find((r) => r.menu === menus.Order)?.create === "1")
             setShowModal(true);
           else {
             toast.warn("Please contact admin", { containerId: "layout" });

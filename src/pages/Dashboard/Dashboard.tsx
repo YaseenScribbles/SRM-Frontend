@@ -62,6 +62,12 @@ type State = {
   qty: string;
 };
 
+type District = {
+  district: string;
+  orders: string;
+  qty: string;
+};
+
 type Top10Product = {
   Product: string;
   Quantity: number;
@@ -83,6 +89,7 @@ const Dashboard: React.FC<Props> = ({}) => {
   const [count, setCount] = useState<Count[]>([]);
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [states, setStates] = useState<State[]>([]);
+  const [districts, setDistricts] = useState<District[]>([]);
   const [showRange, setShowRange] = useState(false);
   const [duration, setDuraion] = useState({
     fromDate: format(new Date(), "yyyy-MM-dd"),
@@ -133,7 +140,7 @@ const Dashboard: React.FC<Props> = ({}) => {
       }
 
       // Format the date to group by hourly slots (e.g., "2025-01-25 20:00")
-      const hourSlot = format(parsedDate, "HH");
+      const hourSlot = format(parsedDate, "h a");
 
       // Initialize the hour slot if not present
       if (!groupedData.has(hourSlot)) {
@@ -172,7 +179,8 @@ const Dashboard: React.FC<Props> = ({}) => {
         }
       );
 
-      const { visits, orders, count, orderItems, states } = response.data;
+      const { visits, orders, count, orderItems, states, districts } =
+        response.data;
 
       const productMap = new Map<string, Top10Product>();
 
@@ -196,6 +204,7 @@ const Dashboard: React.FC<Props> = ({}) => {
       setCount(count);
       setOrderItems(orderItems);
       setStates(states);
+      setDistricts(districts);
       setTop10Product(top10Product);
     } catch (error) {
       handleError(error);
@@ -550,6 +559,31 @@ const Dashboard: React.FC<Props> = ({}) => {
             </div>
           </div>
         )} */}
+        {districts.length > 0 && (
+          <div className="db-grid__cell db-grid__cell--5">
+            <label className="title">DISTRICT REPORT</label>
+            <div className="table__container">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>District</th>
+                    <th>Orders</th>
+                    <th>Quantity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {districts.map((district) => (
+                    <tr key={uuid()}>
+                      <td>{district.district}</td>
+                      <td className="end">{district.orders}</td>
+                      <td className="end">{district.qty}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

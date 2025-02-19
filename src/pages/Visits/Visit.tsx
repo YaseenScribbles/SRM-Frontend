@@ -1,4 +1,5 @@
 import {
+  ColumnDef,
   createColumnHelper,
   getCoreRowModel,
   getFilteredRowModel,
@@ -36,9 +37,22 @@ const Visit: React.FC<Props> = ({}) => {
   const [showModal, setShowModal] = useState(false);
   const [editId, setEditId] = useState(0);
 
-  const columns = [
-    columnHelper.accessor("id", {
-      header: "Id",
+  const columns: ColumnDef<any>[] = [
+    {
+      id: "s_no",
+      header: "S. No",
+      cell: ({ row, table }) => {
+        const pageIndex = table.getState().pagination.pageIndex; // Current page index
+        const pageSize = table.getState().pagination.pageSize; // Items per page
+        return pageIndex * pageSize + (row.index % pageSize) + 1; // Serial number calculation
+      },
+    },
+    columnHelper.accessor("id",{
+      header: "Visit No.",
+      cell:(info) => info.getValue()
+    }),
+    columnHelper.accessor("date", {
+      header: "Date",
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("contact", {
@@ -55,6 +69,10 @@ const Visit: React.FC<Props> = ({}) => {
     }),
     columnHelper.accessor("response", {
       header: "Response",
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor("user", {
+      header: "User",
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("actions", {
@@ -134,7 +152,7 @@ const Visit: React.FC<Props> = ({}) => {
           setGlobalFilter={setGlobalFilter}
           table={table}
           tableData={data}
-          reportName="Contacts"
+          reportName="Visits"
           excludeSortingColumns={["actions"]}
         />
       )}

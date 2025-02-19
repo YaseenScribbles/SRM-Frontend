@@ -1,4 +1,5 @@
 import {
+  ColumnDef,
   createColumnHelper,
   getCoreRowModel,
   getFilteredRowModel,
@@ -36,9 +37,18 @@ const Contact: React.FC<Props> = ({}) => {
   const [showModal, setShowModal] = useState(false);
   const [editId, setEditId] = useState(0);
 
-  const columns = [
+  const columns: ColumnDef<any>[] = [
+    {
+      id: "s_no",
+      header: "S. No",
+      cell: ({ row, table }) => {
+        const pageIndex = table.getState().pagination.pageIndex; // Current page index
+        const pageSize = table.getState().pagination.pageSize; // Items per page
+        return pageIndex * pageSize + (row.index % pageSize) + 1; // Serial number calculation
+      },
+    },
     columnHelper.accessor("id", {
-      header: "Id",
+      header: "Contact Id",
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("name", {
