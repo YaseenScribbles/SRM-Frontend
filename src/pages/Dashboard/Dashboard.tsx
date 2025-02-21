@@ -126,7 +126,7 @@ const Dashboard: React.FC<Props> = ({}) => {
   const processData = (data: Order[]): OrderGraph[] => {
     const groupedData = new Map<
       string,
-      { orderCount: number; totalQuantity: number }
+      { orderCount: number; totalQuantity: number; sortKey: number }
     >();
 
     data.forEach((order) => {
@@ -141,10 +141,15 @@ const Dashboard: React.FC<Props> = ({}) => {
 
       // Format the date to group by hourly slots (e.g., "2025-01-25 20:00")
       const hourSlot = format(parsedDate, "h a");
+      const sortKey = parseInt(format(parsedDate, "H"), 10);
 
       // Initialize the hour slot if not present
       if (!groupedData.has(hourSlot)) {
-        groupedData.set(hourSlot, { orderCount: 0, totalQuantity: 0 });
+        groupedData.set(hourSlot, {
+          orderCount: 0,
+          totalQuantity: 0,
+          sortKey: sortKey,
+        });
       }
 
       // Update order count and total quantity
@@ -159,8 +164,10 @@ const Dashboard: React.FC<Props> = ({}) => {
         time,
         orderCount: values.orderCount,
         totalQuantity: values.totalQuantity,
+        sortKey: values.sortKey,
       }))
-      .sort((a, b) => Number(a.time) - Number(b.time));
+      .sort((a, b) => a.sortKey - b.sortKey)
+      .map(({ sortKey, ...rest }) => rest);
   };
 
   const getData = async () => {
