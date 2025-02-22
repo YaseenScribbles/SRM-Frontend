@@ -117,7 +117,7 @@ const Navbar: React.FC<Props> = ({}) => {
                 }}
               >
                 <svg className="side-nav__icon">
-                  <use xlinkHref="/icons/sprite.svg#icon-bar-chart"></use>
+                  <use xlinkHref="/icons/sprite.svg#icon-pie-chart"></use>
                 </svg>
                 Dashboard
               </a>
