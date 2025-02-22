@@ -1,6 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import Loading from "react-loading";
-import { colorPrimary, colorSecondary, url } from "../../assets/constants";
+import {
+  colorPrimary,
+  colorSecondary,
+  storageUrl,
+  url,
+} from "../../assets/constants";
 import Select from "../../components/Select";
 import { handleError } from "../../assets/helperFunctions";
 import axios from "axios";
@@ -20,6 +25,8 @@ import {
   AreaChart,
   Area,
 } from "recharts";
+import { Slide } from "react-slideshow-image";
+import "react-slideshow-image/dist/styles.css";
 
 type Props = {};
 
@@ -79,6 +86,13 @@ type OrderGraph = {
   totalQuantity: number;
 };
 
+type VisitImage = {
+  image_path: string;
+  user: string;
+  time: string;
+  location: string;
+};
+
 const Dashboard: React.FC<Props> = ({}) => {
   const [loading, setLoading] = useState(false);
   const [userOptions, setUserOptions] = useState([]);
@@ -98,6 +112,7 @@ const Dashboard: React.FC<Props> = ({}) => {
   const rangePickerBtnRef = useRef<HTMLButtonElement>(null);
   const [top10Product, setTop10Product] = useState<Top10Product[]>([]);
   const [orderGraphData, setOrderGraphData] = useState<OrderGraph[]>([]);
+  const [visitImages, setVisitImages] = useState<VisitImage[]>([]);
 
   const getUsers = async () => {
     try {
@@ -186,8 +201,15 @@ const Dashboard: React.FC<Props> = ({}) => {
         }
       );
 
-      const { visits, orders, count, orderItems, states, districts } =
-        response.data;
+      const {
+        visits,
+        orders,
+        count,
+        orderItems,
+        states,
+        districts,
+        visitImages,
+      } = response.data;
 
       const productMap = new Map<string, Top10Product>();
 
@@ -213,6 +235,7 @@ const Dashboard: React.FC<Props> = ({}) => {
       setStates(states);
       setDistricts(districts);
       setTop10Product(top10Product);
+      setVisitImages(visitImages);
     } catch (error) {
       handleError(error);
     } finally {
@@ -268,7 +291,7 @@ const Dashboard: React.FC<Props> = ({}) => {
       <div className="db-grid">
         {visits.length > 0 && (
           <div className="db-grid__cell db-grid__cell--1">
-            <label className="title">VISITS</label>
+            <label className="title">VISITS - RECENT</label>
             <div className="table__container">
               <table className="table">
                 <thead>
@@ -297,7 +320,7 @@ const Dashboard: React.FC<Props> = ({}) => {
         )}
         {orders.length > 0 && (
           <div className="db-grid__cell db-grid__cell--2">
-            <label className="title">ORDERS</label>
+            <label className="title">ORDERS - RECENT</label>
             <div className="table__container">
               <table className="table">
                 <thead>
@@ -380,7 +403,7 @@ const Dashboard: React.FC<Props> = ({}) => {
         )}
         {states.length > 0 && (
           <div className="db-grid__cell db-grid__cell--5">
-            <label className="title">STATEWISE REPORT</label>
+            <label className="title">STATE REPORT</label>
             <div className="table__container">
               <table className="table">
                 <thead>
@@ -567,7 +590,7 @@ const Dashboard: React.FC<Props> = ({}) => {
           </div>
         )} */}
         {districts.length > 0 && (
-          <div className="db-grid__cell db-grid__cell--5">
+          <div className="db-grid__cell db-grid__cell--8">
             <label className="title">DISTRICT REPORT</label>
             <div className="table__container">
               <table className="table">
@@ -589,6 +612,28 @@ const Dashboard: React.FC<Props> = ({}) => {
                 </tbody>
               </table>
             </div>
+          </div>
+        )}
+        {visitImages.length > 0 && (
+          <div className="db-grid__cell db-grid__cell--9">
+            <label className="title">Visits (photos)</label>
+            <Slide>
+              {visitImages.map((image) => (
+                <div key={uuid()} className="each-slide-effect">
+                  <div
+                    style={{
+                      backgroundImage: `url(${storageUrl}${image.image_path})`,
+                    }}
+                  >
+                    <span>
+                      <div className="location">{image.location}</div>
+                      <div className="time">{image.time}</div>
+                      <div className="user">{image.user}</div>
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </Slide>
           </div>
         )}
       </div>
