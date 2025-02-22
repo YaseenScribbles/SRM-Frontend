@@ -219,11 +219,10 @@ const AddEditVisit: React.FC<Props> = ({
     if (!e.target.files) return;
     const files = Array.from(e.target.files);
     const options = {
-      maxSizeMB: 0.2, // Max 200 KB
+      maxSizeMB: 0.25, // Max 250 KB
       maxWidthOrHeight: 1024, // Resize to 1024px max
-      useWebWorker: true,
-      initialQuality: 0.7, // Lower image quality
-      fileType: "image/webp", // Convert to WebP for best compression
+      useWebWorker: true,      
+      fileType: "image/jpeg",
     };
     
     const compressedFilePreviews = await Promise.all(
