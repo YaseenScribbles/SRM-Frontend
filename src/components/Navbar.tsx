@@ -102,6 +102,27 @@ const Navbar: React.FC<Props> = ({}) => {
               {`Hi, ${user?.name} 👋🏼`}
             </a>
           </li>
+          {user?.rights.find((r) => r.menu === menus.Dashboard)?.view === "1" && (
+            <li
+              className="side-nav__item"
+              onTouchStart={(e) => e.currentTarget.classList.add("hover")}
+              onTouchEnd={(e) => e.currentTarget.classList.remove("hover")}
+            >
+              <a
+                href="#"
+                className="side-nav__link"
+                onClick={() => {
+                  navigate("/dashboard");
+                  setShowSideNav(false);
+                }}
+              >
+                <svg className="side-nav__icon">
+                  <use xlinkHref="/icons/sprite.svg#icon-bar-chart"></use>
+                </svg>
+                Dashboard
+              </a>
+            </li>
+          )}
           {user?.rights.find((r) => r.menu === menus.User)?.view === "1" && (
             <li
               className="side-nav__item"
