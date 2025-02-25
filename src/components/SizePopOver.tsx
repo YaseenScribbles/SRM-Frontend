@@ -2,8 +2,7 @@ import React, {
   ChangeEvent,
   Dispatch,
   SetStateAction,
-  useEffect,
-  useRef,
+  useEffect,  
   useState,
 } from "react";
 
@@ -20,8 +19,7 @@ type Props = {
 };
 
 const SizePopOver: React.FC<Props> = ({ sizes, setShow, onDone }) => {
-  const [data, setData] = useState<SizeDetail[]>(sizes);
-  const popoverRef = useRef<HTMLDivElement>(null);
+  const [data, setData] = useState<SizeDetail[]>([]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -39,11 +37,13 @@ const SizePopOver: React.FC<Props> = ({ sizes, setShow, onDone }) => {
   };
 
   useEffect(() => {
-    if (popoverRef.current) popoverRef.current.focus();
-  }, []);
+    if (sizes) {
+      setData(sizes);
+    }
+  }, [sizes]);
 
   return (
-    <div className="popover" ref={popoverRef}>
+    <div className="popover">
       <div className="popover__header">
         <h5>Available Sizes</h5>
         <svg className="close-icon" onClick={() => setShow(false)}>
@@ -51,7 +51,7 @@ const SizePopOver: React.FC<Props> = ({ sizes, setShow, onDone }) => {
         </svg>
       </div>
       <div className="popover__body">
-        {sizes.map((size, index) => (
+        {data.map((size, index) => (
           <div className="row mt-sm" key={index}>
             <div className="col center">{size.size}</div>
             <div className="col center">{"=>"}</div>
@@ -73,6 +73,7 @@ const SizePopOver: React.FC<Props> = ({ sizes, setShow, onDone }) => {
             <button
               className="btn"
               onClick={() => {
+                console.log(data);
                 if (data) onDone(data);
                 setShow(false);
               }}

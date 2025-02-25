@@ -363,6 +363,14 @@ const AddEditOrder: React.FC<Props> = ({
 
   useEffect(() => {
     getContacts();
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();            
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, []);
 
   useEffect(() => {
