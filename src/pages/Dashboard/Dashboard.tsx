@@ -376,7 +376,7 @@ const Dashboard: React.FC<Props> = ({}) => {
         )}
         {orderItems.length > 0 && (
           <div className="db-grid__cell db-grid__cell--4">
-            <label className="title">ORDER DETAILS</label>
+            <label className="title">ORDER DETAILS - RECENT</label>
             <div className="table__container">
               <table className="table">
                 <thead>

@@ -4,6 +4,7 @@ import React, {
   SetStateAction,
   useEffect,
   useReducer,
+  useRef,
   useState,
 } from "react";
 import { useUserContext } from "../../contexts/UserContext";
@@ -118,6 +119,8 @@ const AddEditOrder: React.FC<Props> = ({
   const [showPopOver, setShowPopOver] = useState(false);
 
   const [state, dispatch] = useReducer(appReducer, { order_items: [] });
+  const [triggerScroll, setTriggerScroll] = useState(false);
+  const lastRowRef = useRef<HTMLTableRowElement>(null);
 
   const getContacts = async () => {
     try {
@@ -397,6 +400,15 @@ const AddEditOrder: React.FC<Props> = ({
     }
   }, [JSON.stringify(sizes), JSON.stringify(state.order_items)]);
 
+  useEffect(() => {
+    if (triggerScroll && lastRowRef.current) {
+      lastRowRef.current?.scrollIntoView({
+        behavior: "smooth",
+      });
+      setTriggerScroll(false);
+    }
+  }, [triggerScroll]);
+
   return (
     <ReactModal
       isOpen={show}
@@ -518,7 +530,7 @@ const AddEditOrder: React.FC<Props> = ({
                             return;
                           }
 
-                          if (item.qty > 0)
+                          if (item.qty > 0) {
                             dispatch({
                               type: "AddItem",
                               payload: {
@@ -529,6 +541,8 @@ const AddEditOrder: React.FC<Props> = ({
                                 qty: item.qty,
                               },
                             });
+                            setTriggerScroll(true);
+                          }
                         });
                       }}
                     />
@@ -574,8 +588,15 @@ const AddEditOrder: React.FC<Props> = ({
                     </thead>
                     <tbody>
                       {state.order_items.length > 0 ? (
-                        state.order_items.map((item) => (
-                          <tr key={item.size_id}>
+                        state.order_items.map((item, i) => (
+                          <tr
+                            key={item.size_id}
+                            ref={
+                              i + 1 === state.order_items.length
+                                ? lastRowRef
+                                : null
+                            }
+                          >
                             <td className="hide">{item.size_id}</td>
                             <td>{item.brand}</td>
                             <td>{item.style}</td>

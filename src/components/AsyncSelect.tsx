@@ -34,6 +34,7 @@ const AsyncCustomSelect: React.FC<Props> = ({
       <ReactSelect
         className="select"
         id={id}
+        isClearable
         cacheOptions
         loadOptions={loadOptions}
         placeholder={placeholder}
