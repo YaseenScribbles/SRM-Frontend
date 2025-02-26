@@ -15,7 +15,8 @@
   font-size: 1.6rem;
 
   &__card {
-    padding: 5rem;
+    padding-block: 6rem;
+    padding-inline: 3rem;
     background-color: var(--color-primary);
     color: var(--color-grey-light-1);
     display: flex;
@@ -26,9 +27,8 @@
     position: relative;
     transition: all 0.25s;
 
-    @media screen and (max-width: 37.5em) {
-      padding-block: 5rem;
-      padding-inline: 3rem;
+    @media screen and (max-width: 37.5em) {      
+      padding-inline: 2rem;
     }
   }
 
