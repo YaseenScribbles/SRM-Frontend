@@ -10,6 +10,10 @@
   color: var(--color-grey-dark-2);
   transition: all 0.25s ease-out;
 
+  //for safari
+  font-size: 2rem;
+  height: 5rem;
+
   &:hover {
     border: var(--smallborder);
   }

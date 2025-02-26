@@ -17,12 +17,17 @@
   &--big {
     min-width: 60%;
     height: fit-content;
-    max-height: 87%;
+    max-height: 90%;
 
     @media screen and (max-width: 86em) {
       min-width: 90%;
-      max-height: 89%;
+      max-height: 91%;
     }
+  }
+
+  &--contact {
+    max-height: 95%;
+    overflow-y: auto;
   }
 
   @media screen and (max-width: 37.5em) {
@@ -54,6 +59,8 @@
     color: var(--color-grey-light-1);
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
+    position: sticky;
+    top: 0;
 
     @media screen and (max-width: 37.5em) {
       font-size: 1.3rem;

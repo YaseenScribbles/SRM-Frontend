@@ -72,8 +72,7 @@ const SizePopOver: React.FC<Props> = ({ sizes, setShow, onDone }) => {
           <div className="col end">
             <button
               className="btn"
-              onClick={() => {
-                console.log(data);
+              onClick={() => {                
                 if (data) onDone(data);
                 setShow(false);
               }}

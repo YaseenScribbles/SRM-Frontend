@@ -1,5 +1,12 @@
 .select {
   color: var(--color-grey-dark-2);
+
+  //for safari
+
+  .css-yjcsjf-control {
+    font-size: 2rem;
+    min-height: 5rem;
+  }
 }
 
 .select + label {

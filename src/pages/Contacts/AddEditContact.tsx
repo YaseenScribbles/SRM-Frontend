@@ -216,7 +216,7 @@ const AddEditContact: React.FC<Props> = ({
   return (
     <ReactModal
       isOpen={show}
-      className="modal modal--purpose"
+      className="modal modal--contact"
       overlayClassName="modal-overlay"
       ariaHideApp={false}
       parentSelector={() => document.getElementById("work-space")!}

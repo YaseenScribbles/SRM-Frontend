@@ -47,7 +47,7 @@ const Select: React.FC<Props> = ({
             borderColor: isFocused ? colorSecondary : "transparent",
             backgroundColor: colorGreyLight2,
             color: colorGreyDark2,
-            fontSize: "1.4rem",
+            fontSize: "2rem",
             borderRadius: "1rem",
             ":hover": {
               border: `1px solid ${colorSecondary}`,
@@ -59,7 +59,7 @@ const Select: React.FC<Props> = ({
           }),
           option: (baseStyles, {}) => ({
             ...baseStyles,
-            fontSize: "1.4rem",
+            fontSize: "2rem",
           }),
         }}
         theme={(theme) => ({
