@@ -255,10 +255,13 @@ const Dashboard: React.FC<Props> = ({}) => {
     <>
       <div className="heading">
         <div className="heading__title">
-          <h2>Dashboard</h2>
-        </div>
-        <div className="loading">
-          {loading && <Loading color={colorSecondary} type="bars" />}
+          {loading ? (
+            <div className="loading">
+              <Loading color={colorSecondary} type="bars" />
+            </div>
+          ) : (
+            <h2>Dashboard</h2>
+          )}
         </div>
         <div className="form">
           <div className="form-group">
