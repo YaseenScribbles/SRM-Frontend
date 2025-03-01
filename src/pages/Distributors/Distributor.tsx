@@ -165,6 +165,7 @@ const Distributor: React.FC<Props> = ({}) => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              willChange:"transform"
             }}
           >
             <Loading color={colorSecondary} type="bars" />

@@ -3,12 +3,13 @@
     // right: 50%;
     // transform: translateX(50%);
     // bottom: 0;
+    will-change: transform;
     transition: all 0.25s;
     display: flex;
     justify-content: center;
 
     div {
-        height: 4rem !important;
-        width: 4rem !important;
+        max-height: 4rem !important;
+        max-width: 4rem !important;
     }
 }

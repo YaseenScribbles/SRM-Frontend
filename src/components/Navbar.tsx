@@ -262,7 +262,7 @@ const Navbar: React.FC<Props> = ({}) => {
                   color={colorGreyLight1}
                   height={"10%"}
                   width={"10%"}
-                  className="d-flex"
+                  className="d-flex animate"
                 />
               ) : (
                 <svg className="side-nav__icon">

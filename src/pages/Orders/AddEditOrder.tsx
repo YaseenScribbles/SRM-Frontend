@@ -364,7 +364,7 @@ const AddEditOrder: React.FC<Props> = ({
   useEffect(() => {
     getContacts();
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      event.preventDefault();            
+      event.preventDefault();
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
@@ -428,7 +428,9 @@ const AddEditOrder: React.FC<Props> = ({
       <div className="modal__header">
         <h2>{`${editId > 0 ? "Update Order" : "Add Order"}`}</h2>
         {loading && (
-          <Loading type="balls" color={colorGreyLight1} height={"100%"} />
+          <div className="loading">
+            <Loading type="balls" color={colorGreyLight1} height={"100%"} />
+          </div>
         )}
         <svg
           onClick={() => {
