@@ -13,10 +13,11 @@
 
     &.fixed-height {
       max-height: 45rem;
+      width: 100%;      
       position: relative;
 
       @media screen and (max-width: 86em) {
-        max-height: 29rem;
+        max-height: 32rem;
       }
       
       @media screen and (max-width: 50em) {
@@ -33,8 +34,6 @@
 
   &__table {
     width: 100%;
-
-
 
     thead {
       background-color: var(--color-primary);
@@ -129,7 +128,7 @@
 
       &.visible {
         position: sticky;
-        bottom: 0;
+        bottom: -0.1rem;
       }
 
       tr {

@@ -155,6 +155,7 @@ const Grid:React.FC<Props> = ({
                 </table>
             </div>
             <div className="pagination">
+                <p className="count">Records : {tableData.length}</p>
                 <ul className="pagination__list">
                     <li className="pagination__item">
                         <button
